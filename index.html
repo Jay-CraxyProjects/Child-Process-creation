@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fork Simulation</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Optional: Add CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/theme/material-darker.min.css">
+
+</head>
+<body>
+    <h1>Fork() System Call Simulation</h1>
+
+    <div class="container">
+        <div class="editor-pane">
+            <h2>Enter C-like Code:</h2>
+            <textarea id="codeInput" rows="15" cols="60">
+#include <stdio.h>
+#include <unistd.h>
+
+int main() {
+    printf("P: Parent process started (PID: %d)\n", getpid());
+    pid_t child_pid;
+
+    child_pid = fork(); // First fork
+
+    if (child_pid == 0) {
+        // Child 1 code
+        printf("C1: Child 1 created (PID: %d, Parent: %d)\n", getpid(), getppid());
+        fork(); // Second fork (by Child 1)
+        printf("C1/P2: Process continues (PID: %d)\n", getpid());
+    } else {
+        // Parent code
+        printf("P: Parent continuing after first fork (Child PID: %d)\n", child_pid);
+        fork(); // Third fork (by Parent)
+         printf("P/P3: Process continues (PID: %d)\n", getpid());
+    }
+
+    printf("Process exiting (PID: %d)\n", getpid());
+    return 0;
+}
+            </textarea>
+            <button id="startButton">Start Simulation</button>
+            <button id="resetButton">Reset</button>
+             <p>Status: <span id="status">Idle</span></p>
+        </div>
+
+        <div class="simulation-pane">
+            <div class="code-display">
+                <h2>Code Execution</h2>
+                <pre><code id="codeOutput"></code></pre>
+            </div>
+            <div class="process-tree">
+                <h2>Process Tree</h2>
+                <div id="treeContainer"></div>
+                </div>
+            <div class="process-output">
+                <h2>Simulated Output</h2>
+                <pre id="simOutput"></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional: Add CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/mode/clike/clike.min.js"></script>
+    <!-- D3 for tree or alternative -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
